@@ -2,144 +2,437 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
-<title>mental battles</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokémon Battles Online</title>
 <style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #6fb1fc, #4364f7, #3b3b98);
-        margin: 0;
-        padding: 20px;
-        color: white;
+    :root {
+        --bg1: #0f172a;
+        --bg2: #1e293b;
+        --accent: #38bdf8;
+        --accent-soft: rgba(56,189,248,0.15);
+        --danger: #f97373;
+        --card: #020617;
+        --text-main: #e5e7eb;
+        --text-soft: #9ca3af;
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --shadow-soft: 0 18px 40px rgba(0,0,0,0.45);
     }
 
-    h1 {
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #1d4ed8 0, #020617 45%, #000 100%);
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+    }
+
+    .app {
+        width: 100%;
+        max-width: 900px;
+        padding: 16px 14px 32px;
+    }
+
+    header {
         text-align: center;
-        font-size: 40px;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 5px #000;
+        margin-bottom: 18px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+        margin: 0 0 6px;
+        letter-spacing: 0.04em;
+    }
+
+    header p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-soft);
+    }
+
+    .tagline {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(15,23,42,0.8);
+        border: 1px solid rgba(148,163,184,0.3);
+        font-size: 0.75rem;
+        margin-bottom: 8px;
+    }
+
+    .tagline span {
+        font-size: 0.9rem;
     }
 
     .arena {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 30px;
-        flex-wrap: wrap;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+
+    @media (min-width: 720px) {
+        .arena {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
     }
 
     .card {
-        width: 300px;
-        background: rgba(255,255,255,0.15);
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        backdrop-filter: blur(6px);
-        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        background: radial-gradient(circle at top left, rgba(56,189,248,0.12), rgba(15,23,42,0.96));
+        border-radius: var(--radius-lg);
+        padding: 14px 14px 16px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(148,163,184,0.25);
+        position: relative;
+        overflow: hidden;
     }
 
-    input {
+    .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(248,250,252,0.08), transparent 55%);
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    .card-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card h2 {
+        margin: 0 0 4px;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card small {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--text-soft);
+        margin-bottom: 8px;
+    }
+
+    .pill {
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(15,23,42,0.9);
+        border: 1px solid rgba(148,163,184,0.4);
+        color: var(--text-soft);
+    }
+
+    .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    label {
+        font-size: 0.8rem;
+        color: var(--text-soft);
+    }
+
+    input[type="text"] {
         width: 100%;
-        padding: 8px;
-        border-radius: 8px;
-        border: none;
-        margin-top: 10px;
-        text-align: center;
+        padding: 9px 10px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(148,163,184,0.4);
+        background: rgba(15,23,42,0.9);
+        color: var(--text-main);
+        font-size: 0.9rem;
+        outline: none;
     }
 
-    img {
-        margin-top: 10px;
-        border-radius: 10px;
-        background: rgba(0,0,0,0.2);
+    input[type="text"]::placeholder {
+        color: rgba(148,163,184,0.7);
     }
 
-    button {
-        margin-top: 15px;
+    input[type="text"]:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+    }
+
+    .btn {
         width: 100%;
-        padding: 12px;
-        font-size: 18px;
+        padding: 9px 10px;
+        border-radius: var(--radius-md);
         border: none;
-        border-radius: 10px;
-        background: #FFD93D;
-        color: black;
-        font-weight: bold;
+        font-size: 0.9rem;
+        font-weight: 600;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        color: #0b1120;
+        box-shadow: 0 10px 25px rgba(56,189,248,0.35);
+    }
+
+    .btn-secondary {
+        background: rgba(15,23,42,0.95);
+        color: var(--text-main);
+        border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+        box-shadow: none;
+    }
+
+    .pokemon-display {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pokemon-display img {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        background: radial-gradient(circle at top, rgba(248,250,252,0.2), rgba(15,23,42,0.9));
+        border: 1px solid rgba(148,163,184,0.4);
+        object-fit: contain;
+    }
+
+    .pokemon-info {
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+
+    .pokemon-info b {
+        text-transform: capitalize;
+    }
+
+    .types {
+        margin-top: 2px;
+    }
+
+    .type-pill {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        margin-right: 4px;
+        margin-top: 2px;
+        background: rgba(15,23,42,0.9);
+        border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .fight-wrapper {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .fight-btn {
+        border-radius: 999px;
+        padding: 11px 14px;
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
     }
 
     .result-box {
-        margin-top: 30px;
-        background: rgba(255,255,255,0.2);
-        padding: 20px;
-        border-radius: 15px;
-        backdrop-filter: blur(6px);
+        margin-top: 10px;
+        background: linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+        border-radius: var(--radius-lg);
+        padding: 12px 12px 14px;
+        border: 1px solid rgba(148,163,184,0.4);
+        box-shadow: var(--shadow-soft);
         white-space: pre-line;
+        font-size: 0.8rem;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .result-title {
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+        font-weight: 600;
     }
 
     .codes {
-        margin-top: 40px;
-        background: rgba(0,0,0,0.25);
-        padding: 20px;
-        border-radius: 15px;
+        margin-top: 18px;
+        background: radial-gradient(circle at top, rgba(56,189,248,0.12), rgba(15,23,42,0.98));
+        border-radius: var(--radius-lg);
+        padding: 14px 14px 16px;
+        border: 1px solid rgba(148,163,184,0.4);
+        box-shadow: var(--shadow-soft);
     }
 
     .codes h2 {
-        text-align: center;
-        margin-top: 0;
+        margin: 0 0 6px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .codes p {
+        margin: 6px 0 4px;
+        font-size: 0.8rem;
+        color: var(--text-soft);
     }
 
     .codes small {
         display: block;
-        margin-top: 5px;
-        opacity: 0.8;
+        margin-top: 3px;
+        font-size: 0.7rem;
+        color: var(--text-soft);
+    }
+
+    .codes hr {
+        border: none;
+        border-top: 1px solid rgba(148,163,184,0.3);
+        margin: 10px 0;
+    }
+
+    .inline-row {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
+    .inline-row input[type="text"] {
+        flex: 1;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: rgba(15,23,42,0.9);
+        border: 1px solid rgba(148,163,184,0.5);
+        color: var(--text-soft);
+    }
+
+    .hint {
+        font-size: 0.7rem;
+        color: var(--text-soft);
+        margin-top: 4px;
     }
 </style>
 </head>
 <body>
+<div class="app">
+    <header>
+        <div class="tagline">
+            <span>⚔️</span>
+            <span>Batalles Pokémon 1v1 · Compatible mòbil</span>
+        </div>
+        <h1>Pokémon Battles Online</h1>
+        <p>Tria un Pokémon per a cada jugador o juga des de dos dispositius amb codis compartits.</p>
+    </header>
 
-<h1>⚔️ Batalla Pokémon amb URL de PokéAPI</h1>
+    <section class="arena">
+        <div class="card">
+            <div class="card-inner">
+                <h2>Jugador 1 <span class="pill">Tu en aquest dispositiu</span></h2>
+                <small>Escriu un nom de Pokémon (ex: <b>ditto</b>, <b>charizard</b>, <b>pikachu</b>…)</small>
 
-<div class="arena">
+                <div class="field-group">
+                    <label for="url1">Nom del Pokémon</label>
+                    <input id="url1" type="text" placeholder="Exemple: ditto">
+                </div>
 
-    <div class="card">
-        <h2>Jugador 1</h2>
-        <input id="url1" placeholder="Enganxa aquí l'URL de PokéAPI">
-        <button onclick="loadP1()">Carrega Pokémon 1</button>
-        <img id="img1" width="150" height="150">
-        <div id="info1"></div>
-    </div>
+                <button class="btn btn-primary" onclick="loadP1()">
+                    Carrega Pokémon 1
+                </button>
 
-    <div class="card">
-        <h2>Jugador 2</h2>
-        <input id="url2" placeholder="Enganxa aquí l'URL de PokéAPI">
-        <button onclick="loadP2()">Carrega Pokémon 2</button>
-        <img id="img2" width="150" height="150">
-        <div id="info2"></div>
-    </div>
+                <div class="pokemon-display" id="p1Display" style="display:none;">
+                    <img id="img1" alt="Pokémon 1">
+                    <div class="pokemon-info" id="info1"></div>
+                </div>
+            </div>
+        </div>
 
-</div>
+        <div class="card">
+            <div class="card-inner">
+                <h2>Jugador 2 <span class="pill">Rival en aquest dispositiu</span></h2>
+                <small>També pots jugar tu mateix amb dos Pokémon diferents.</small>
 
-<button id="fightBtn">COMENÇA EL COMBAT</button>
+                <div class="field-group">
+                    <label for="url2">Nom del Pokémon</label>
+                    <input id="url2" type="text" placeholder="Exemple: pikachu">
+                </div>
 
-<div id="resultat" class="result-box"></div>
+                <button class="btn btn-primary" onclick="loadP2()">
+                    Carrega Pokémon 2
+                </button>
 
-<!-- ============================
-     SECCIÓ DE CODIS DE COMBAT
-     ============================ -->
-<div class="codes">
-    <h2>🔐 Codis de combat (per jugar des de 2 ordinadors)</h2>
+                <div class="pokemon-display" id="p2Display" style="display:none;">
+                    <img id="img2" alt="Pokémon 2">
+                    <div class="pokemon-info" id="info2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <p><b>1️⃣ Generar codi a partir d'un URL de PokéAPI</b></p>
-    <input id="codeUrlInput" placeholder="URL de PokéAPI (ex: https://pokeapi.co/api/v2/pokemon/6/)">
-    <button onclick="generarCodiDesDeUrl()">Genera codi</button>
-    <input id="generatedCode" placeholder="Codi generat (ex: 2340-8997)" readonly>
-    <small>Envia aquest codi al teu rival per WhatsApp, Discord, etc.</small>
+    <section class="fight-wrapper">
+        <button id="fightBtn" class="btn btn-primary fight-btn">
+            COMENÇA EL COMBAT
+        </button>
+    </section>
 
-    <hr>
+    <section class="result-box" id="resultat">
+        <div class="result-title">Resultat del combat</div>
+        <span style="font-size:0.78rem;color:#9ca3af;">Carrega dos Pokémon i prem el botó per veure qui guanya.</span>
+    </section>
 
-    <p><b>2️⃣ Obtenir URL a partir d'un codi rebut</b></p>
-    <input id="receivedCode" placeholder="Codi rebut (ex: 2340-8997)">
-    <button onclick="obtenirUrlDesDeCodi()">Obté URL de PokéAPI</button>
-    <input id="decodedUrl" placeholder="URL reconstruït" readonly>
-    <small>Copia aquest URL i enganxa'l al camp del teu Jugador 1 o 2.</small>
+    <section class="codes">
+        <h2>🔐 Mode codis (per jugar des de 2 dispositius)</h2>
+        <p><b>1️⃣ Generar un codi a partir del teu Pokémon</b></p>
+        <span class="badge">Aquest dispositiu</span>
+        <div class="field-group" style="margin-top:6px;">
+            <label for="codeUrlInput">Nom o URL de PokéAPI</label>
+            <input id="codeUrlInput" type="text" placeholder="Ex: ditto o https://pokeapi.co/api/v2/pokemon/ditto">
+        </div>
+        <button class="btn btn-secondary" onclick="generarCodiDesDeUrl()">
+            Genera codi per enviar al rival
+        </button>
+        <div class="inline-row">
+            <input id="generatedCode" type="text" placeholder="Codi generat (ex: 2340-8997)" readonly>
+            <button class="btn btn-secondary" onclick="copyGeneratedCode()">Copia</button>
+        </div>
+        <small>Envia aquest codi al teu rival per WhatsApp, Discord, etc.</small>
+
+        <hr>
+
+        <p><b>2️⃣ Has rebut un codi del teu rival?</b></p>
+        <span class="badge">Aquest dispositiu</span>
+        <div class="field-group" style="margin-top:6px;">
+            <label for="receivedCode">Codi rebut</label>
+            <input id="receivedCode" type="text" placeholder="Ex: 2340-8997">
+        </div>
+        <button class="btn btn-secondary" onclick="obtenirUrlDesDeCodi()">
+            Obté el Pokémon del rival
+        </button>
+        <div class="inline-row">
+            <input id="decodedUrl" type="text" placeholder="Nom o URL reconstruït" readonly>
+            <button class="btn btn-secondary" onclick="useDecodedAsP2()">Posa'l com a Jugador 2</button>
+        </div>
+        <div class="hint">
+            Truc: Jugador 1 genera un codi i l'envia al Jugador 2. El Jugador 2 el posa aquí, veu el Pokémon del rival i pot fer el combat.
+        </div>
+    </section>
 </div>
 
 <script>
@@ -167,21 +460,20 @@ const TYPE_CHART = {
   fairy:{fighting:2,dragon:2,dark:2,fire:0.5,poison:0.5,steel:0.5}
 };
 
-// ============================
-// VARIABLES GLOBALS
-// ============================
 let P1 = null;
 let P2 = null;
 
 // ============================
-// CARREGAR POKÉMON DES D’UN URL
+// CARREGAR POKÉMON PER NOM
 // ============================
-async function loadPokemonFromURL(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("URL incorrecte o Pokémon no trobat");
+async function loadPokemonByName(name) {
+    name = name.trim().toLowerCase();
+    if (!name) throw new Error("Nom buit");
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    if (!res.ok) throw new Error("Pokémon no trobat");
     const data = await res.json();
-
     return {
+        id: data.id,
         name: data.name,
         types: data.types.map(t => t.type.name),
         abilities: data.abilities.map(a => a.ability.name),
@@ -190,26 +482,32 @@ async function loadPokemonFromURL(url) {
 }
 
 async function loadP1() {
-    const url = document.getElementById("url1").value.trim();
+    const name = document.getElementById("url1").value;
     try {
-        P1 = await loadPokemonFromURL(url);
+        P1 = await loadPokemonByName(name);
         document.getElementById("img1").src = P1.sprite;
+        document.getElementById("p1Display").style.display = "flex";
         document.getElementById("info1").innerHTML =
-            `<br><b>${P1.name}</b><br>Tipus: ${P1.types.join(", ")}<br>Habilitats: ${P1.abilities.join(", ")}`;
+            `<b>${P1.name}</b><br>` +
+            `<span class="types">${P1.types.map(t => `<span class="type-pill">${t}</span>`).join(" ")}</span><br>` +
+            `<span style="font-size:0.75rem;color:#9ca3af;">Habilitats: ${P1.abilities.join(", ")}</span>`;
     } catch {
-        alert("Error carregant Pokémon 1");
+        alert("Error carregant Pokémon 1. Comprova el nom.");
     }
 }
 
 async function loadP2() {
-    const url = document.getElementById("url2").value.trim();
+    const name = document.getElementById("url2").value;
     try {
-        P2 = await loadPokemonFromURL(url);
+        P2 = await loadPokemonByName(name);
         document.getElementById("img2").src = P2.sprite;
+        document.getElementById("p2Display").style.display = "flex";
         document.getElementById("info2").innerHTML =
-            `<br><b>${P2.name}</b><br>Tipus: ${P2.types.join(", ")}<br>Habilitats: ${P2.abilities.join(", ")}`;
+            `<b>${P2.name}</b><br>` +
+            `<span class="types">${P2.types.map(t => `<span class="type-pill">${t}</span>`).join(" ")}</span><br>` +
+            `<span style="font-size:0.75rem;color:#9ca3af;">Habilitats: ${P2.abilities.join(", ")}</span>`;
     } catch {
-        alert("Error carregant Pokémon 2");
+        alert("Error carregant Pokémon 2. Comprova el nom.");
     }
 }
 
@@ -266,9 +564,6 @@ function duel(p1, p2) {
     return { winner: tie, e1, e2, tieBreak: true };
 }
 
-// ============================
-// BOTÓ DE COMBAT
-// ============================
 document.getElementById("fightBtn").onclick = () => {
     if (!P1 || !P2) {
         alert("Primer carrega els dos Pokémon!");
@@ -300,57 +595,116 @@ document.getElementById("fightBtn").onclick = () => {
 };
 
 // ============================
-// UTILITATS PER ALS CODIS
+// CODIS (NOM / URL → ID → XOR)
 // ============================
 
-// Extreu l'ID del Pokémon d'un URL de PokéAPI
-function getIdFromPokeUrl(url) {
-    const match = url.match(/pokemon\/(\d+)\//);
-    if (!match) throw new Error("No s'ha pogut trobar l'ID al URL");
-    return parseInt(match[1], 10);
+// Obté l'ID real d'un Pokémon a partir d'un nom o URL
+async function getPokemonId(input) {
+    input = input.trim().toLowerCase();
+
+    // Si és només un número → ja és l'ID
+    if (/^\d+$/.test(input)) {
+        return parseInt(input, 10);
+    }
+
+    // Si és un URL de PokéAPI → extreure la part final
+    if (input.includes("pokeapi.co")) {
+        const parts = input.split("/");
+        let last = parts.pop();
+        if (!last) last = parts.pop();
+        if (/^\d+$/.test(last)) return parseInt(last, 10);
+        input = last; // si és un nom, continua
+    }
+
+    // Si és un nom → demanar a PokéAPI
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${input}`);
+    if (!res.ok) throw new Error("Pokémon no trobat");
+    const data = await res.json();
+    return data.id;
 }
 
-// Construeix un URL de PokéAPI a partir d'un ID
+// Construeix un "nom o URL" a partir d'un ID (aquí fem servir URL)
 function buildPokeUrlFromId(id) {
-    return `https://pokeapi.co/api/v2/pokemon/${id}/`;
+    return `https://pokeapi.co/api/v2/pokemon/${id}`;
 }
 
-// Genera un codi del tipus AAAA-BBBB a partir d'un URL
-function generarCodiDesDeUrl() {
-    const url = document.getElementById("codeUrlInput").value.trim();
-    if (!url) {
-        alert("Posa un URL de PokéAPI");
+// Genera un codi AAAA-BBBB a partir d'un nom o URL
+async function generarCodiDesDeUrl() {
+    const input = document.getElementById("codeUrlInput").value.trim();
+    if (!input) {
+        alert("Posa un nom de Pokémon o un URL de PokéAPI");
         return;
     }
     try {
-        const id = getIdFromPokeUrl(url);
-        // clau aleatòria de 4 dígits
+        const id = await getPokemonId(input);
         const key = Math.floor(Math.random() * 10000);
-        const enc = id ^ key; // XOR
+        const enc = id ^ key;
         const encStr = enc.toString().padStart(4, "0");
         const keyStr = key.toString().padStart(4, "0");
-        const code = `${encStr}-${keyStr}`;
-        document.getElementById("generatedCode").value = code;
+        document.getElementById("generatedCode").value = `${encStr}-${keyStr}`;
     } catch (e) {
-        alert("URL no vàlid de PokéAPI");
+        alert("No s'ha pogut generar el codi. Pokémon no vàlid.");
     }
 }
 
-// A partir d'un codi AAAA-BBBB, reconstrueix l'URL
+// A partir d'un codi AAAA-BBBB, reconstrueix el nom/URL
 function obtenirUrlDesDeCodi() {
     const code = document.getElementById("receivedCode").value.trim();
-    if (!code || !/^\d{4}-\d{4}$/.test(code)) {
+    if (!/^\d{4}-\d{4}$/.test(code)) {
         alert("Codi no vàlid. Format esperat: 1234-5678");
         return;
     }
     const [encStr, keyStr] = code.split("-");
     const enc = parseInt(encStr, 10);
     const key = parseInt(keyStr, 10);
-    const id = enc ^ key; // XOR invers
+    const id = enc ^ key;
     const url = buildPokeUrlFromId(id);
     document.getElementById("decodedUrl").value = url;
 }
-</script>
 
+// Copiar codi generat
+function copyGeneratedCode() {
+    const input = document.getElementById("generatedCode");
+    if (!input.value) {
+        alert("Encara no hi ha cap codi generat.");
+        return;
+    }
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert("Codi copiat al porta-retalls.");
+}
+
+// Posar el Pokémon decodificat com a Jugador 2
+async function useDecodedAsP2() {
+    const decoded = document.getElementById("decodedUrl").value.trim();
+    if (!decoded) {
+        alert("Primer obtén el Pokémon del rival amb el codi.");
+        return;
+    }
+    // decoded és un URL amb ID → podem carregar-lo
+    try {
+        const res = await fetch(decoded);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        P2 = {
+            id: data.id,
+            name: data.name,
+            types: data.types.map(t => t.type.name),
+            abilities: data.abilities.map(a => a.ability.name),
+            sprite: data.sprites.other["official-artwork"].front_default
+        };
+        document.getElementById("url2").value = P2.name;
+        document.getElementById("img2").src = P2.sprite;
+        document.getElementById("p2Display").style.display = "flex";
+        document.getElementById("info2").innerHTML =
+            `<b>${P2.name}</b><br>` +
+            `<span class="types">${P2.types.map(t => `<span class="type-pill">${t}</span>`).join(" ")}</span><br>` +
+            `<span style="font-size:0.75rem;color:#9ca3af;">Habilitats: ${P2.abilities.join(", ")}</span>`;
+    } catch {
+        alert("No s'ha pogut carregar el Pokémon del codi.");
+    }
+}
+</script>
 </body>
 </html>
